@@ -66,7 +66,7 @@ function GameBoard() {
 
     }
 
-    return { getBoard, markCell, printBoard, checkWinningConditions };
+    return {getBoard, markCell, printBoard, checkWinningConditions};
 
 }
 
@@ -94,8 +94,11 @@ function GameController() {
     }
     ]
     let activePlayer = players[0];
+    let inactivePlayer;
 
     const getActivePlayer = () => activePlayer;
+    const getInactivePlayer = () => activePlayer === players[0] ? inactivePlayer = players[1] : inactivePlayer = players[0];
+    ;
 
     const changeActivePlayer = () =>
         activePlayer === players[0] ? activePlayer = players[1] : activePlayer = players[0];
@@ -108,8 +111,7 @@ function GameController() {
 
     const playRound = (row, column) => {
         if (board.checkWinningConditions()) {
-            changeActivePlayer();
-            console.log(`Player ${getActivePlayer().playerName} has won! Congratulations!`);
+            console.log(`Player ${getInactivePlayer().playerName} has won! Congratulations!`);
             return;
         }
         board.markCell(row, column, activePlayer);
