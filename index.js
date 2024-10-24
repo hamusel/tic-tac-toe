@@ -122,7 +122,7 @@ function GameController() {
     printNewRound();
 
     return {
-        playRound, getActivePlayer, getBoard: board.getBoard
+        playRound, getActivePlayer, getInactivePlayer, getBoard: board.getBoard, checkWinningConditions: board.checkWinningConditions
     }
 
 }
@@ -141,15 +141,17 @@ function screenController() {
         const activePlayer = game.getActivePlayer();
 
         // Display player's turn
-        playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`
+        if (!game.checkWinningConditions()) {
+            playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`
+        } else {
+            playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`
+        }
 
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const cellButton = document.createElement("button");
                 cellButton.dataset.column = j;
-                console.log("MY COLUMN 2:" + cellButton.dataset.column);
                 cellButton.dataset.row = i;
-                console.log("MY ROW 2:" + cellButton.dataset.row);
                 cellButton.classList.add("cell");
 
                 if (board[i][j].getToken() !== 0) {

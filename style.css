@@ -38,6 +38,7 @@ h1 {
 .cell {
     height: 200px;
     width: 200px;
+    font-size: 3rem;
 }
 
 #playerTurn {
