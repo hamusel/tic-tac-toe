@@ -34,6 +34,10 @@ function GameBoard() {
         }
     };
 
+    const checkValid = (row, column) => {
+        return board[row][column].getToken() === 0;
+    };
+
     const printBoard = () => {
         for (let i = 0; i < rows; i++) {
             let rowString = '';
@@ -66,7 +70,7 @@ function GameBoard() {
 
     }
 
-    return {getBoard, markCell, printBoard, checkWinningConditions};
+    return {getBoard, markCell, printBoard, checkWinningConditions, checkValid};
 
 }
 
@@ -122,7 +126,12 @@ function GameController() {
     printNewRound();
 
     return {
-        playRound, getActivePlayer, getInactivePlayer, getBoard: board.getBoard, checkWinningConditions: board.checkWinningConditions
+        playRound,
+        getActivePlayer,
+        getInactivePlayer,
+        getBoard: board.getBoard,
+        checkValid: board.checkValid,
+        checkWinningConditions: board.checkWinningConditions
     }
 
 }
@@ -169,7 +178,7 @@ function screenController() {
         const selectedColumn = e.target.dataset.column;
         const selectedRow = e.target.dataset.row;
         // Make sure I've clicked a column and not the gaps in between
-        if (!selectedColumn || !selectedRow) return;
+        if (!selectedColumn || !selectedRow || !game.checkValid(selectedRow, selectedColumn)) return;
 
         game.playRound(selectedRow, selectedColumn);
         updateScreen();
