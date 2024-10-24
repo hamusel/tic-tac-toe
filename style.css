@@ -1,0 +1,49 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    font-size: 100%;
+    vertical-align: baseline;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    background: grey;
+}
+
+h1 {
+    font-size: 4rem;
+}
+
+#container {
+    display: inline-grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    grid-gap: 1px;
+    background-color: black;
+    border: 1px solid black;
+}
+
+#container > div {
+    background-color: white;
+    padding: 15px;
+}
+
+.cell {
+    height: 200px;
+    width: 200px;
+}
+
+#playerTurn {
+    font-size: 2rem;
+}
+
+button {
+    cursor: pointer;
+}
