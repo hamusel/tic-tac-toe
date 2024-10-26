@@ -1,3 +1,18 @@
+let playerName1;
+let playerName2;
+
+function submitForm() {
+    playerName1 = document.getElementById("name1").value;
+    playerName2 = document.getElementById("name2").value;
+
+    if (playerName1 && playerName2) {
+        document.getElementById("popup").style.display = "none";
+        screenController.init();
+    } else {
+        alert("You must complete both fields!");
+    }
+}
+
 function GameBoard() {
     const rows = 3;
     const columns = 3;
@@ -88,15 +103,13 @@ function Cell() {
 }
 
 function GameController() {
-    const playerOneName = "Player 1";
-    const playerTwoName = "Player 2";
     const board = GameBoard();
 
     const players = [{
-        playerName: playerOneName,
+        playerName: playerName1,
         token: 'X'
     }, {
-        playerName: playerTwoName,
+        playerName: playerName2,
         token: '0'
     }
     ]
@@ -141,21 +154,18 @@ function GameController() {
 }
 
 const screenController = (function () {
-    const game = GameController();
+    let game;
+
     const playerTurnDiv = document.getElementById("playerTurn");
     const boardDiv = document.getElementById("container");
     boardDiv.style.display = "inline-grid";
 
     const updateScreen = () => {
-        // clear the board
         boardDiv.textContent = "";
 
-        // get the newest version of the board and player turn
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
-        console.log("so many cells left" + game.getAvailableCellsAmount())
 
-        // Display player's turn
         if (game.getAvailableCellsAmount() === 0) {
             playerTurnDiv.textContent = "Game is over!";
         } else if (!game.checkWinningConditions()) {
@@ -164,7 +174,6 @@ const screenController = (function () {
             playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`;
         }
 
-        // Render each cell as a button
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const cellButton = document.createElement("button");
@@ -191,6 +200,7 @@ const screenController = (function () {
     };
 
     const initialize = () => {
+        game = GameController();
         boardDiv.addEventListener("click", clickHandlerBoard);
         updateScreen();
     };
@@ -198,8 +208,14 @@ const screenController = (function () {
     return {
         init: initialize
     };
-
 })();
 
-screenController.init();
+window.onload = function () {
+    document.getElementById("popup").style.display = "block";
+}
+
+const button = document.getElementById("submit");
+button.addEventListener("click", () => {
+    submitForm();
+})
 
