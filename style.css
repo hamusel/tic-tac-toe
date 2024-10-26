@@ -22,7 +22,7 @@ h1 {
 }
 
 #container {
-    display: inline-grid;
+    display: none;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
     grid-gap: 1px;

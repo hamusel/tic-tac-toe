@@ -20,6 +20,12 @@ function GameBoard() {
             console.log("Cell is already taken!");
         }
 
+        if (getAvailableCellsAmount() === 0) {
+            console.log("Game is over!");
+        }
+    };
+
+    const getAvailableCellsAmount = () => {
         const availableCells = [];
         for (let i = 0; i < rows; i++) {
             for (let j = 0; j < columns; j++) {
@@ -28,11 +34,8 @@ function GameBoard() {
                 }
             }
         }
-
-        if (availableCells.length === 0) {
-            console.log("Game is over!");
-        }
-    };
+        return availableCells.length;
+    }
 
     const checkValid = (row, column) => {
         return board[row][column].getToken() === 0;
@@ -70,7 +73,7 @@ function GameBoard() {
 
     }
 
-    return {getBoard, markCell, printBoard, checkWinningConditions, checkValid};
+    return {getBoard, markCell, printBoard, checkWinningConditions, checkValid, getAvailableCellsAmount};
 
 }
 
@@ -131,15 +134,17 @@ function GameController() {
         getInactivePlayer,
         getBoard: board.getBoard,
         checkValid: board.checkValid,
+        getAvailableCellsAmount: board.getAvailableCellsAmount,
         checkWinningConditions: board.checkWinningConditions
     }
 
 }
 
-function screenController() {
+const screenController = (function () {
     const game = GameController();
     const playerTurnDiv = document.getElementById("playerTurn");
     const boardDiv = document.getElementById("container");
+    boardDiv.style.display = "inline-grid";
 
     const updateScreen = () => {
         // clear the board
@@ -148,14 +153,18 @@ function screenController() {
         // get the newest version of the board and player turn
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
+        console.log("so many cells left" + game.getAvailableCellsAmount())
 
         // Display player's turn
-        if (!game.checkWinningConditions()) {
-            playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`
+        if (game.getAvailableCellsAmount() === 0) {
+            playerTurnDiv.textContent = "Game is over!";
+        } else if (!game.checkWinningConditions()) {
+            playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`;
         } else {
-            playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`
+            playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`;
         }
 
+        // Render each cell as a button
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
                 const cellButton = document.createElement("button");
@@ -167,30 +176,30 @@ function screenController() {
                     cellButton.textContent = board[i][j].getToken();
                 }
                 boardDiv.appendChild(cellButton);
-
             }
         }
+    };
 
-    }
-
-
-    function clickHandlerBoard(e) {
+    const clickHandlerBoard = (e) => {
         const selectedColumn = e.target.dataset.column;
         const selectedRow = e.target.dataset.row;
-        // Make sure I've clicked a column and not the gaps in between
+
         if (!selectedColumn || !selectedRow || !game.checkValid(selectedRow, selectedColumn)) return;
 
         game.playRound(selectedRow, selectedColumn);
         updateScreen();
-    }
+    };
 
-    boardDiv.addEventListener("click", clickHandlerBoard);
+    const initialize = () => {
+        boardDiv.addEventListener("click", clickHandlerBoard);
+        updateScreen();
+    };
 
+    return {
+        init: initialize
+    };
 
-    updateScreen();
+})();
 
-
-}
-
-screenController();
+screenController.init();
 
