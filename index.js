@@ -1,5 +1,6 @@
 let playerName1;
 let playerName2;
+let scores = [0, 0];
 
 function submitForm() {
     playerName1 = document.getElementById("name1").value;
@@ -104,46 +105,36 @@ function Cell() {
 
 function GameController() {
     const board = GameBoard();
-
-    const players = [{
-        playerName: playerName1,
-        token: 'X',
-        score: 0
-    }, {
-        playerName: playerName2,
-        token: '0',
-        score: 0
-    }
-    ]
     let gameOn = true;
+
+    const players = [
+        {playerName: playerName1, token: 'X', score: scores[0]},
+        {playerName: playerName2, token: '0', score: scores[1]}
+    ];
     let activePlayer = players[0];
-    let inactivePlayer;
 
     const isGameOn = () => gameOn;
     const getActivePlayer = () => activePlayer;
-    const getInactivePlayer = () => activePlayer === players[0] ? inactivePlayer = players[1] : inactivePlayer = players[0];
+    const getInactivePlayer = () => activePlayer === players[0] ? players[1] : players[0];
 
+    const changeActivePlayer = () => {
+        activePlayer = activePlayer === players[0] ? players[1] : players[0];
+    };
 
-    const changeActivePlayer = () =>
-        activePlayer === players[0] ? activePlayer = players[1] : activePlayer = players[0];
-
-    const printNewRound = function () {
-        board.printBoard();
-    }
-
-
-    const playRound = (row, column) => {
-        if (board.checkWinningConditions()) {
-            return;
-        }
-        board.markCell(row, column, activePlayer);
-        changeActivePlayer();
-        printNewRound();
+    const endGame = () => {
+        gameOn = false;
     };
 
     const getPlayers = () => players;
 
-    printNewRound();
+    const playRound = (row, column) => {
+        if (!gameOn || board.checkWinningConditions()) {
+            endGame();
+            return;
+        }
+        board.markCell(row, column, activePlayer);
+        changeActivePlayer();
+    };
 
     return {
         playRound,
@@ -151,11 +142,13 @@ function GameController() {
         getInactivePlayer,
         getPlayers,
         isGameOn,
+        endGame,
         getBoard: board.getBoard,
         checkValid: board.checkValid,
         getAvailableCellsAmount: board.getAvailableCellsAmount,
         checkWinningConditions: board.checkWinningConditions
-    }
+    };
+
 
 }
 
@@ -166,28 +159,37 @@ const screenController = (function () {
     const scoreDiv0 = document.getElementById("score0");
     const scoreDiv1 = document.getElementById("score1");
     const boardDiv = document.getElementById("container");
+    const resetBtn = document.getElementById("resetBtn");
+    resetBtn.addEventListener("click", () => {
+        screenController.init();
+    })
     boardDiv.style.display = "inline-grid";
 
     const updateScreen = () => {
-        updateScore()
+        updateScore();
         boardDiv.textContent = "";
 
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        if (game.getAvailableCellsAmount() === 0 && game.isGameOn) {
+        if (game.getAvailableCellsAmount() === 0 && game.isGameOn()) {
             playerTurnDiv.textContent = "Game is over!";
-            game.isGameOn = false;
-        } else if (!game.checkWinningConditions() && game.isGameOn) {
+            game.endGame();
+        } else if (!game.checkWinningConditions() && game.isGameOn()) {
             playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`;
         } else {
             playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`;
-            if (game.isGameOn) {
-                game.getInactivePlayer().score++;
+            if (game.isGameOn()) {
+                const winnerIndex = game.getPlayers().findIndex(player => player.playerName === game.getInactivePlayer().playerName);
+                if (winnerIndex !== -1) {
+                    game.getPlayers()[winnerIndex].score++;
+                    scores[winnerIndex] = game.getPlayers()[winnerIndex].score;
+                }
+                updateScore();
+                game.endGame();
             }
-            updateScore();
-            game.isGameOn = false;
         }
+
 
 
         for (let i = 0; i < board.length; i++) {
