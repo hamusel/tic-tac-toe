@@ -107,31 +107,33 @@ function GameController() {
 
     const players = [{
         playerName: playerName1,
-        token: 'X'
+        token: 'X',
+        score: 0
     }, {
         playerName: playerName2,
-        token: '0'
+        token: '0',
+        score: 0
     }
     ]
+    let gameOn = true;
     let activePlayer = players[0];
     let inactivePlayer;
 
+    const isGameOn = () => gameOn;
     const getActivePlayer = () => activePlayer;
     const getInactivePlayer = () => activePlayer === players[0] ? inactivePlayer = players[1] : inactivePlayer = players[0];
-    ;
+
 
     const changeActivePlayer = () =>
         activePlayer === players[0] ? activePlayer = players[1] : activePlayer = players[0];
 
     const printNewRound = function () {
-        console.log(`Active player is now ${getActivePlayer().playerName}`);
         board.printBoard();
     }
 
 
     const playRound = (row, column) => {
         if (board.checkWinningConditions()) {
-            console.log(`Player ${getInactivePlayer().playerName} has won! Congratulations!`);
             return;
         }
         board.markCell(row, column, activePlayer);
@@ -139,12 +141,16 @@ function GameController() {
         printNewRound();
     };
 
+    const getPlayers = () => players;
+
     printNewRound();
 
     return {
         playRound,
         getActivePlayer,
         getInactivePlayer,
+        getPlayers,
+        isGameOn,
         getBoard: board.getBoard,
         checkValid: board.checkValid,
         getAvailableCellsAmount: board.getAvailableCellsAmount,
@@ -157,22 +163,32 @@ const screenController = (function () {
     let game;
 
     const playerTurnDiv = document.getElementById("playerTurn");
+    const scoreDiv0 = document.getElementById("score0");
+    const scoreDiv1 = document.getElementById("score1");
     const boardDiv = document.getElementById("container");
     boardDiv.style.display = "inline-grid";
 
     const updateScreen = () => {
+        updateScore()
         boardDiv.textContent = "";
 
         const board = game.getBoard();
         const activePlayer = game.getActivePlayer();
 
-        if (game.getAvailableCellsAmount() === 0) {
+        if (game.getAvailableCellsAmount() === 0 && game.isGameOn) {
             playerTurnDiv.textContent = "Game is over!";
-        } else if (!game.checkWinningConditions()) {
+            game.isGameOn = false;
+        } else if (!game.checkWinningConditions() && game.isGameOn) {
             playerTurnDiv.textContent = `${activePlayer.playerName}'s turn...`;
         } else {
             playerTurnDiv.textContent = `${game.getInactivePlayer().playerName} has won!!!`;
+            if (game.isGameOn) {
+                game.getInactivePlayer().score++;
+            }
+            updateScore();
+            game.isGameOn = false;
         }
+
 
         for (let i = 0; i < board.length; i++) {
             for (let j = 0; j < board[i].length; j++) {
@@ -188,6 +204,11 @@ const screenController = (function () {
             }
         }
     };
+
+    const updateScore = () => {
+        scoreDiv0.textContent = `${game.getPlayers()[0].playerName}'s score: ${game.getPlayers()[0].score}`;
+        scoreDiv1.textContent = `${game.getPlayers()[1].playerName}'s score: ${game.getPlayers()[1].score}`
+    }
 
     const clickHandlerBoard = (e) => {
         const selectedColumn = e.target.dataset.column;
