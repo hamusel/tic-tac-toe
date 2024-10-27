@@ -2,23 +2,24 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
-    border: 0;
-    outline: 0;
-    font-size: 100%;
-    vertical-align: baseline;
+    font-family: Arial, sans-serif;
 }
 
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     align-items: center;
-    gap: 30px;
-    background: grey;
+    gap: 20px;
+    background: linear-gradient(45deg, #4B79A1, #283E51);
+    color: #f0f0f0;
+    min-height: 100vh;
 }
 
 h1 {
     font-size: 4rem;
+    color: #FFD700;
+    text-shadow: 2px 2px #000;
+    margin-bottom: 20px;
 }
 
 .overlay {
@@ -37,62 +38,107 @@ h1 {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: white;
-    padding: 20px;
-    border-radius: 10px;
-    width: 300px;
+    background: #333;
+    padding: 30px;
+    border-radius: 12px;
+    width: 350px;
     text-align: center;
+    color: #f0f0f0;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .popup-form input[type="text"] {
-    width: 90%;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    width: 100%;
+    padding: 12px;
+    margin: 12px 0;
+    border-radius: 8px;
+    border: 1px solid #555;
+    font-size: 1.1rem;
+    background: #222;
+    color: #f0f0f0;
 }
 
 .popup-form button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     background: #28a745;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
+    font-size: 1.1rem;
+    transition: background 0.3s;
+}
+
+.popup-form button:hover {
+    background: #218838;
 }
 
 #container {
-    display: none;
+    display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, 1fr);
-    grid-gap: 1px;
-    background-color: black;
-    border: 1px solid black;
-}
-
-#container > div {
-    background-color: white;
-    padding: 15px;
+    gap: 5px;
+    background-color: #444;
+    border: 2px solid #FFD700;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 20px;
 }
 
 .cell {
-    height: 200px;
-    width: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFF;
+    height: 120px;
+    width: 120px;
     font-size: 3rem;
+    font-weight: bold;
+    color: #333;
+    transition: background-color 0.3s, transform 0.1s;
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cell:hover {
+    background-color: #FFD700;
+    transform: scale(1.05);
 }
 
 #playerTurn, #score0, #score1 {
-    font-size: 2rem;
-}
-
-button {
-    cursor: pointer;
+    font-size: 1.8rem;
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    color: #FFD700;
+    text-shadow: 1px 1px #000;
 }
 
 #resetBtn {
     color: white;
-    background-color: red;
-    font-size: 3rem;
-    border-radius: 10px;
-    padding: 15px;
+    background-color: #DC3545;
+    font-size: 2rem;
+    border-radius: 12px;
+    padding: 15px 30px;
+    cursor: pointer;
+    transition: background 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+#resetBtn:hover {
+    background-color: #C82333;
+}
+
+button {
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.cell.X {
+    color: #FF4136;
+}
+
+.cell.O {
+    color: #0074D9;
 }

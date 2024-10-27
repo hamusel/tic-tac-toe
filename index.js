@@ -201,6 +201,7 @@ const screenController = (function () {
 
                 if (board[i][j].getToken() !== 0) {
                     cellButton.textContent = board[i][j].getToken();
+                    cellButton.textContent === "X"? cellButton.classList.add("X") : cellButton.classList.add("O");
                 }
                 boardDiv.appendChild(cellButton);
             }
